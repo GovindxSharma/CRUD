@@ -1,8 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Table, TableHead, TableBody, TableCell, TableRow, styled, Button } from '@mui/material';
-import { delUser, getUsers } from '../service/api';
-import { Link } from 'react-router-dom';
-import Empty from './empty';
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  styled,
+  Button,
+  CircularProgress,
+} from "@mui/material";
+import { delUser, getUsers } from "../service/api";
+import { Link } from "react-router-dom";
+import Empty from "./empty";
 
 const THead = styled(TableRow)`
   background: #000000;
@@ -18,14 +27,21 @@ const StyledTable = styled(Table)`
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true); // Initialize loading state
 
   useEffect(() => {
     getAllUsers();
   }, []);
 
   const getAllUsers = async () => {
-    let response = await getUsers();
-    setUsers(response.data);
+    try {
+      let response = await getUsers();
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false); // Update loading state when data is received or error occurs
+    }
   };
 
   const deleteUser = async (id) => {
@@ -35,7 +51,11 @@ const AllUsers = () => {
 
   return (
     <>
-      {users.length > 0 ? (
+      {loading ? ( // Render loading indicator if loading state is true
+        <div style={{ textAlign: "center", marginTop: 50 }}>
+          <CircularProgress />
+        </div>
+      ) : users.length > 0 ? (
         <StyledTable>
           <TableHead>
             <THead>
@@ -54,10 +74,19 @@ const AllUsers = () => {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
                 <TableCell>
-                  <Button variant="contained" color="secondary" style={{ marginRight: 10 }} component={Link} to={`/edit/${user._id}`}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginRight: 10 }}
+                    component={Link}
+                    to={`/edit/${user._id}`}
+                  >
                     Edit
                   </Button>
-                  <Button variant="contained" onClick={() => deleteUser(user._id)}>
+                  <Button
+                    variant="contained"
+                    onClick={() => deleteUser(user._id)}
+                  >
                     Delete
                   </Button>
                 </TableCell>
