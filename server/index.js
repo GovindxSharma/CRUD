@@ -40,9 +40,8 @@ if (process.env.NODE_ENV === "production") {
 
 //   ------------------------------DEPLOYMENT---------------------------------//
 
-const port =8000;
-const username=process.env.DB_USERNAME;
-const password=process.env.DB_PASSWORD;
+const port =process.env.PORT ||8000;
 
-Connection(username,password);
+
+Connection();
 app.listen(port,()=>console.log(`Server is Up at port:${port}`))

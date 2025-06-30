@@ -1,20 +1,23 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load environment variables
+dotenv.config(); // Load variables from .env
 
 const Connection = async () => {
-    const MONGODB_URI = process.env.MONGODB_URI;
+  const baseURI = process.env.MONGODB_URI;
+  const dbName = process.env.MONGODB_NAME;
 
-    try {
-        await mongoose.connect(MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log("✅ Database connected successfully");
-    } catch (error) {
-        console.error("❌ Error connecting to the database:", error);
-    }
+  const fullURI = `${baseURI}/${dbName}?retryWrites=true&w=majority`;
+
+  try {
+    await mongoose.connect(fullURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ Database connected successfully");
+  } catch (error) {
+    console.error("❌ Error connecting to the database:", error);
+  }
 };
 
 export default Connection;
