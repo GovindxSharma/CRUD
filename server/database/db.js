@@ -1,13 +1,10 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load variables from .env
+dotenv.config();
 
 const Connection = async () => {
-  const baseURI = process.env.MONGODB_URI;
-  const dbName = process.env.MONGODB_NAME;
-
-  const fullURI = `${baseURI}/${dbName}?retryWrites=true&w=majority`;
+  const fullURI = process.env.MONGODB_URI;
 
   try {
     await mongoose.connect(fullURI, {
@@ -16,7 +13,7 @@ const Connection = async () => {
     });
     console.log("✅ Database connected successfully");
   } catch (error) {
-    console.error("❌ Error connecting to the database:", error);
+    console.error("❌ Error connecting to the database:", error.message);
   }
 };
 
