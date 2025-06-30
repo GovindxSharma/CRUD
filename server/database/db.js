@@ -1,18 +1,20 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const Connection = async (username, password) => {
-    const dbName = process.env.MONGODB_NAME; // Retrieve the database name from environment variables
-    const URL = `mongodb+srv://${username}:${password}@crud-app.9kzvdlv.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+dotenv.config(); // Load environment variables
+
+const Connection = async () => {
+    const MONGODB_URI = process.env.MONGODB_URI;
 
     try {
-        await mongoose.connect(URL, {
-            useNewUrlParser: true, // These options are optional but recommended for better handling of MongoDB connections
-            useUnifiedTopology: true
+        await mongoose.connect(MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
         });
-        console.log('Database connected Successfully');
+        console.log("✅ Database connected successfully");
     } catch (error) {
-        console.log('Error while connecting to DataBase', error);
+        console.error("❌ Error connecting to the database:", error);
     }
-}
+};
 
 export default Connection;
